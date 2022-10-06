@@ -4,6 +4,7 @@ import requests
 
 LAMBDA_FOLDER = '/tmp/'
 
+
 def download_tfstate(bucket_name, file_name):
     s3 = boto3.resource('s3')
 
@@ -15,15 +16,17 @@ def download_tfstate(bucket_name, file_name):
         else:
             raise
 
+
 def terraform_output(alb_output):
-  tf = Terraform(working_dir=LAMBDA_FOLDER)
-  # this should return a json like...  
-  #{'alb_url_example': {'sensitive': False, 'type': 'string', 'value': 'http://lb-5YI-project-alpha-dev-2144336064.us-east-1.alb.amazonaws.com/'}}
-  tfoutput = tf.output()
-  try:
-    return tfoutput[alb_url_example]['value']
-  except Exception as error:
-    print('Error: ' + repr(error))
+    tf = Terraform(working_dir=LAMBDA_FOLDER)
+    # this should return a json like...
+    # {'alb_url_example': {'sensitive': False, 'type': 'string', 'value': 'http://lb-5YI-project-alpha-dev-2144336064.us-east-1.alb.amazonaws.com/'}}
+    tfoutput = tf.output()
+    try:
+        return tfoutput[alb_url_example]['value']
+    except Exception as error:
+        print('Error: ' + repr(error))
+
 
 def lambda_handler(event, context):
     """
@@ -34,7 +37,7 @@ def lambda_handler(event, context):
       "output": "alb_url_example" # output requested
     }
     """
-    print("We started the handler")  
+    print("We started the handler")
     download_tfstate(event['bucket_name'], event['tfname'])
     result = {}
     result['output'] = event.get('output', 'alb_url_example')
@@ -43,5 +46,4 @@ def lambda_handler(event, context):
     return {
         'statusCode': 200,
         'body': json.dumps(result)
-
     }
