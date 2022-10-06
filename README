@@ -1,0 +1,10 @@
+## Create the layer:
+virtualenv -p  python3.9 env; 
+cd  env; 
+source bin/activate; 
+pip install python_terraform;
+cd lib/python3.9/site-packages/
+mkdir python
+cp -r * python/
+zip -r9 functions.zip ./python
+mv functions.zip /layer
